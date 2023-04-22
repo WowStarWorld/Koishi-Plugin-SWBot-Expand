@@ -1,0 +1,24 @@
+{
+  "name": "koishi-plugin-swbot-expand",
+  "description": "StarWorld Bot 4 Expand",
+  "version": "1.0.0",
+  "main": "lib/index.js",
+  "typings": "lib/index.d.ts",
+  "files": [
+    "lib",
+    "dist"
+  ],
+  "license": "MIT",
+  "scripts": {},
+  "keywords": [
+    "chatbot",
+    "koishi",
+    "plugin"
+  ],
+  "peerDependencies": {
+    "koishi": "^4.12.4"
+  },
+  "dependencies": {
+    "json5": "^2.2.3"
+  }
+}
