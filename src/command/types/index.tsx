@@ -1,4 +1,4 @@
-import {Argv, segment} from "koishi";
+import { Argv, segment } from "koishi";
 import json5 from "json5";
 import { getContext } from "../../index";
 import _ from "lodash";

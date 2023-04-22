@@ -18,7 +18,7 @@ export const giveCommand = ctx.command(
         if (!player || !item || typeof amount != "number") return "缺失参数。";
         let stack = new swbot.ItemStack(String(item.id), amount, nbt);
         let result = await player?.give(stack, argv.options["强制"] ? new swbot.CommandEvent(argv) : undefined);
-        if (result) return `成功给予 ${player.getNameWithIdentifier(argv.session)} ${await stack.getNameWithIdentifier(player, new swbot.CommandEvent(argv))}。`;
+        if (result) return `成功给予 ${await player.getNameWithIdentifier(argv.session)} ${await stack.getNameWithIdentifier(player, new swbot.CommandEvent(argv))}。`;
         else return "给予失败";
     }
 );
@@ -64,14 +64,16 @@ export const inventoryCommand = ctx.command("物品栏 <页:正整数>", "查看
 );
 
 export const craftCommand = ctx.command(
-    "合成 <物品:物品标识> [方案:正整数]"
+    "合成 <物品:物品标识> [方案:正整数] [数量:正整数]", "合成物品"
 ).option("页", "<页:正整数>").action(
     async argv => {
         let id = argv.args[0];
         let plan = argv.args[1];
+        let amount = argv.args[2];
+        let player = argv.session.swbot.player;
         if (!id) return "缺失参数。";
+        let recipes = swbot.Recipe.findByResult(id.id);
         if (!plan) {
-            let recipes = swbot.Recipe.findByResult(id.id);
             let pageIndex = argv.options["页"] ?? 1;
             let pages = _.chunk(recipes, 10);
             if (!pages.length) return `未找到。`;
@@ -81,6 +83,20 @@ export const craftCommand = ctx.command(
                 return `[${(pageIndex - 1) * 10 + index + 1}] ${await i.result.getNameWithIdentifier()}\n${(await Promise.all(i.recipe().recipes.map(async i => await new swbot.ItemStack(i.id, i.count, i.nbt).getNameWithIdentifier(argv.session.swbot.player)))).join("\n")}`;
             };
             return `${await id.getName(argv.session.swbot.player)} 的 配方 (${pageIndex}/${pages.length})\n————————\n${(await Promise.all(page.map(recipeToString))).join("\n\n")}\n————————`;
+        } else if (typeof amount == "number") {
+            let recipe = recipes[plan - 1];
+            let result = await recipe.craft(player, amount, new swbot.CommandEvent(argv));
+            if (result.type == "insufficient.items") {
+                return `材料不足，缺少 ${await result.require.getNameWithIdentifier(player, argv.session)}。`;
+            } else if (result.type == "success") {
+                return <template>
+                    {`合成 ${await result.result.getNameWithIdentifier(player, argv.session)} 成功，消耗了\n————————\n`}
+                    {(await Promise.all(result.recipes.map(i => new swbot.ItemStack(i.id, i.count, i.nbt ?? {}).getNameWithIdentifier(player, argv.session)))).join("\n")}
+                    {`\n————————`}
+                </template>;
+            }
+        } else {
+            return "无效参数。";
         }
     }
 );
