@@ -1,3 +1,3 @@
-# StarWorld Bot Default Plugin
+# StarWorld Bot Expand Plugin
 
-StarWorld Bot 4 Default Plugin
+StarWorld Bot 4 Expand Plugin
