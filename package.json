@@ -16,9 +16,9 @@
     "plugin"
   ],
   "peerDependencies": {
-    "koishi": "^4.12.4"
+    "koishi": ">=^4.12.7"
   },
   "dependencies": {
-    "json5": "^2.2.3"
+    "json5": ">=^2.2.3"
   }
 }

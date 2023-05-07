@@ -1,6 +1,6 @@
 import { Context, Schema } from 'koishi';
 
-import "koishi-plugin-swbot/src/index";
+import {} from "koishi-plugin-swbot/src/index";
 
 export const name = 'swbot-expand';
 export const using = ["swbot", "puppeteer"];
